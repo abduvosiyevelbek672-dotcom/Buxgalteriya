@@ -1,0 +1,309 @@
+<!doctype html><html lang="uz"><head><meta name="theme-color" content="#263971"><link rel="manifest" href="manifest.webmanifest"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Buxgalteriya</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky control bar over one working panel; ledger-style rows with mono account codes */
+:root{
+  --bg:#eef1f4;--panel:#fff;--ink:#14202b;--muted:#5d6b78;--line:#d5dce3;
+  --accent:#1d5fa8;--accent-ink:#fff;--accent-soft:#dde9f6;
+  --ok:#1b7a4b;--ok-soft:#dcf1e5;--bad:#b3261e;--bad-soft:#f9e0de;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;--sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f161d;--panel:#18222c;--ink:#e6edf3;--muted:#93a2b0;--line:#2b3946;
+  --accent:#6fa8e8;--accent-ink:#0b1722;--accent-soft:#1f3248;
+  --ok:#5fd194;--ok-soft:#173a29;--bad:#ff8f86;--bad-soft:#40201e;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161d;--panel:#18222c;--ink:#e6edf3;--muted:#93a2b0;--line:#2b3946;
+  --accent:#6fa8e8;--accent-ink:#0b1722;--accent-soft:#1f3248;
+  --ok:#5fd194;--ok-soft:#173a29;--bad:#ff8f86;--bad-soft:#40201e;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);padding-block:16px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-size:1.5rem;line-height:1.2;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:.875rem;margin:2px 0 0}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:none;padding:7px 12px;font-size:.875rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.filters{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:.8125rem}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.lbl{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.row2{display:flex;gap:16px;flex-wrap:wrap}
+.count{font-size:.875rem;color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--line);padding:4px;border-radius:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tabs button{border:0;background:var(--panel);padding:9px 4px;border-radius:7px;font-weight:500;font-size:.9rem}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.code{font-family:var(--mono);font-weight:600;letter-spacing:.02em}
+.tag{font-family:var(--mono);font-size:.7rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--muted);white-space:nowrap}
+/* list */
+.group{padding:0;overflow:hidden}
+.grow{display:grid;grid-template-columns:4.2ch 1fr auto;gap:0 14px;align-items:baseline;padding:9px 14px;border-top:1px solid var(--line);width:100%;text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;min-width:0}
+.grow:first-child{border-top:0}
+.grow.main{background:var(--accent-soft);font-weight:600}
+.grow.sub .code{color:var(--muted)}
+.grow .nm{min-width:0;overflow-wrap:anywhere}
+.hid{color:transparent;background:var(--line);border-radius:4px;user-select:none}
+.chapter{font-weight:600;margin:10px 2px 0;font-size:.95rem}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.btn.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+/* flash */
+.flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px;padding:24px 16px;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px}
+.flash .big{font-family:var(--mono);font-size:2.6rem;font-weight:600}
+.flash .txt{font-size:1.3rem;font-weight:500;text-wrap:balance;overflow-wrap:anywhere}
+.flash .hint{color:var(--muted);font-size:.8125rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+/* test */
+.q{font-size:1.15rem;font-weight:500;text-wrap:balance;overflow-wrap:anywhere}
+.q .code{font-size:2rem;display:block}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{display:flex;gap:10px;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:11px 14px;min-width:0;overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt .code{flex:none}
+input.ans{font-family:var(--mono);font-size:1.6rem;font-weight:600;width:100%;max-width:11ch;padding:8px 12px;border:2px solid var(--line);border-radius:10px;background:var(--panel);letter-spacing:.1em}
+input.ans.right{border-color:var(--ok)} input.ans.wrong{border-color:var(--bad)}
+.msg{min-height:1.5em;font-weight:500}
+.msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+.score{font-family:var(--mono);font-size:2.4rem;font-weight:600}
+.rev{display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:.9rem}
+.rev div{display:flex;gap:10px}
+@media (max-width:480px){.flash .big{font-size:2.2rem}.grow{grid-template-columns:4.2ch 1fr;}.grow .tag{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Hisobvaraqlar rejasi</h1>
+      <p class="sub">21-son BHMS · 0100–9910 va 001–016</p>
+    </div>
+    <div class="seg" role="group" aria-label="Yozuv turi">
+      <button id="sc-lat" aria-pressed="true">Lotin</button>
+      <button id="sc-cyr" aria-pressed="false">Кирилл</button>
+    </div>
+  </div>
+
+  <div class="card filters">
+    <div>
+      <div class="lbl">Bo'lim</div>
+      <div class="chips" id="chapters"></div>
+    </div>
+    <div class="row2">
+      <div>
+        <div class="lbl">Hisoblar</div>
+        <div class="seg" role="group"><button id="lv-main" aria-pressed="true">Asosiy (xx00)</button><button id="lv-all" aria-pressed="false">Subhisoblar bilan</button></div>
+      </div>
+      <div>
+        <div class="lbl">Qiyinlar</div>
+        <div class="seg" role="group"><button id="wk-off" aria-pressed="true">Hammasi</button><button id="wk-on" aria-pressed="false">Faqat qiyinlar</button></div>
+      </div>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="list" aria-selected="true">Ro'yxat</button>
+    <button role="tab" data-tab="flash" aria-selected="false">Kartochka</button>
+    <button role="tab" data-tab="test" aria-selected="false">Test</button>
+    <button role="tab" data-tab="write" aria-selected="false">Yozma</button>
+  </div>
+
+  <div id="view"></div>
+</div>
+
+<script>
+const DATA=[{"c":"0100","k":"Асосий воситалар","l":"Asosiy vositalar","t":"А"},{"c":"0110","k":"Ер","l":"Yer","t":""},{"c":"0111","k":"Ерни ободонлаштириш","l":"Yerni obodonlashtirish","t":""},{"c":"0112","k":"Молиявий ижарага олинган асосий воситаларни ободонлаштириш","l":"Moliyaviy ijaraga olingan asosiy vositalarni obodonlashtirish","t":""},{"c":"0120","k":"Бинолар, иншоотлар ва узатувчи мосламалар","l":"Binolar, inshootlar va uzatuvchi moslamalar","t":""},{"c":"0130","k":"Машина ва асбоб-ускуналар","l":"Mashina va asbob-uskunalar","t":""},{"c":"0140","k":"Мебель ва офис жиҳозлари","l":"Mebel va ofis jihozlari","t":""},{"c":"0150","k":"Компьютер жиҳозлари ва ҳисоблаш техникаси","l":"Kompyuter jihozlari va hisoblash texnikasi","t":""},{"c":"0160","k":"Транспорт воситалари","l":"Transport vositalari","t":""},{"c":"0170","k":"Ишчи ва маҳсулдор ҳайвонлар","l":"Ishchi va mahsuldor hayvonlar","t":""},{"c":"0180","k":"Кўп йиллик ўсимликлар","l":"Koʻp yillik oʻsimliklar","t":""},{"c":"0190","k":"Бошқа асосий воситалар","l":"Boshqa asosiy vositalar","t":""},{"c":"0199","k":"Консервация қилинган асосий воситалар","l":"Konservatsiya qilingan asosiy vositalar","t":""},{"c":"0200","k":"Асосий воситаларнинг эскириши","l":"Asosiy vositalarning eskirishi","t":"КА"},{"c":"0211","k":"Ерни ободонлаштиришнинг эскириши","l":"Yerni obodonlashtirishning eskirishi","t":""},{"c":"0212","k":"Молиявий ижарага олинган асосий воситаларни ободонлаштиришнинг эскириши","l":"Moliyaviy ijaraga olingan asosiy vositalarni obodonlashtirishning eskirishi","t":""},{"c":"0220","k":"Бино, иншоот ва узатувчи мосламаларнинг эскириши","l":"Bino, inshoot va uzatuvchi moslamalarning eskirishi","t":""},{"c":"0230","k":"Машина ва асбоб-ускуналарнинг эскириши","l":"Mashina va asbob-uskunalarning eskirishi","t":""},{"c":"0240","k":"Мебель ва офис жиҳозларининг эскириши","l":"Mebel va ofis jihozlarining eskirishi","t":""},{"c":"0250","k":"Компьютер жиҳозлари ва ҳисоблаш техникасининг эскириши","l":"Kompyuter jihozlari va hisoblash texnikasining eskirishi","t":""},{"c":"0260","k":"Транспорт воситаларининг эскириши","l":"Transport vositalarining eskirishi","t":""},{"c":"0270","k":"Ишчи ҳайвонларнинг эскириши","l":"Ishchi hayvonlarning eskirishi","t":""},{"c":"0280","k":"Кўп йиллик ўсимликларнинг эскириши","l":"Koʻp yillik oʻsimliklarning eskirishi","t":""},{"c":"0290","k":"Бошқа асосий воситаларнинг эскириши","l":"Boshqa asosiy vositalarning eskirishi","t":""},{"c":"0299","k":"Молиявий ижарага олинган асосий воситаларнинг эскириши","l":"Moliyaviy ijaraga olingan asosiy vositalarning eskirishi","t":""},{"c":"0300","k":"Молиявий ижарага олинган асосий воситалар","l":"Moliyaviy ijaraga olingan asosiy vositalar","t":"А"},{"c":"0310","k":"Молиявий ижарага олинган асосий воситалар","l":"Moliyaviy ijaraga olingan asosiy vositalar","t":""},{"c":"0400","k":"Номоддий активлар","l":"Nomoddiy aktivlar","t":"А"},{"c":"0410","k":"Патентлар, лицензиялар ва ноу-хау","l":"Patentlar, litsenziyalar va nou-xau","t":""},{"c":"0420","k":"Савдо маркалари, товар белгилари ва саноат намуналари","l":"Savdo markalari, tovar belgilari va sanoat namunalari","t":""},{"c":"0430","k":"Дастурий таъминот","l":"Dasturiy taʼminot","t":""},{"c":"0440","k":"Ер ва табиат ресурсларидан фойдаланиш ҳуқуқлари","l":"Yer va tabiat resurslaridan foydalanish huquqlari","t":""},{"c":"0460","k":"Франшизинг","l":"Franshizing","t":""},{"c":"0470","k":"Муаллифлик ҳуқуқлари","l":"Mualliflik huquqlari","t":""},{"c":"0480","k":"Гудвилл","l":"Gudvill","t":""},{"c":"0490","k":"Бошқа номоддий активлар","l":"Boshqa nomoddiy aktivlar","t":""},{"c":"0500","k":"Номоддий активлар амортизацияси","l":"Nomoddiy aktivlar amortizatsiyasi","t":"КА"},{"c":"0510","k":"Патентлар, лицензиялар ва ноу-хаунинг амортизацияси","l":"Patentlar, litsenziyalar va nou-xauning amortizatsiyasi","t":""},{"c":"0520","k":"Савдо маркалари, товар белгилари ва саноат намуналарининг амортизацияси","l":"Savdo markalari, tovar belgilari va sanoat namunalarining amortizatsiyasi","t":""},{"c":"0530","k":"Дастурий таъминотнинг амортизацияси","l":"Dasturiy taʼminotning amortizatsiyasi","t":""},{"c":"0540","k":"Ер ва табиат ресурсларидан фойдаланиш ҳуқуқларининг амортизацияси","l":"Yer va tabiat resurslaridan foydalanish huquqlarining amortizatsiyasi","t":""},{"c":"0560","k":"Франшизинг амортизацияси","l":"Franshizing amortizatsiyasi","t":""},{"c":"0570","k":"Муаллифлик ҳуқуқларининг амортизацияси","l":"Mualliflik huquqlarining amortizatsiyasi","t":""},{"c":"0590","k":"Бошқа номоддий активларнинг амортизацияси","l":"Boshqa nomoddiy aktivlarning amortizatsiyasi","t":""},{"c":"0600","k":"Узоқ муддатли инвестициялар","l":"Uzoq muddatli investitsiyalar","t":"А"},{"c":"0610","k":"Қимматли қоғозлар","l":"Qimmatli qogʻozlar","t":""},{"c":"0620","k":"Шуъба хўжалик жамиятларига инвестициялар","l":"Shuʼba xoʻjalik jamiyatlariga investitsiyalar","t":""},{"c":"0630","k":"Қарам хўжалик жамиятларига инвестициялар","l":"Qaram xoʻjalik jamiyatlariga investitsiyalar","t":""},{"c":"0640","k":"Чет эл капитали иштирокидаги ташкилотларга инвестициялар","l":"Chet el kapitali ishtirokidagi tashkilotlarga investitsiyalar","t":""},{"c":"0690","k":"Бошқа узоқ муддатли инвестициялар","l":"Boshqa uzoq muddatli investitsiyalar","t":""},{"c":"0700","k":"Ўрнатиладиган асбоб-ускуналар","l":"Oʻrnatiladigan asbob-uskunalar","t":"А"},{"c":"0710","k":"Ўрнатиладиган асбоб-ускуналар – маҳаллий","l":"Oʻrnatiladigan asbob-uskunalar – mahalliy","t":""},{"c":"0720","k":"Ўрнатиладиган асбоб-ускуналар – хорижий","l":"Oʻrnatiladigan asbob-uskunalar – xorijiy","t":""},{"c":"0800","k":"Капитал қўйилмалар","l":"Kapital qoʻyilmalar","t":"А"},{"c":"0810","k":"Тугалланмаган қурилиш","l":"Tugallanmagan qurilish","t":""},{"c":"0820","k":"Асосий воситаларни харид қилиш","l":"Asosiy vositalarni xarid qilish","t":""},{"c":"0830","k":"Номоддий активларни харид қилиш","l":"Nomoddiy aktivlarni xarid qilish","t":""},{"c":"0840","k":"Асосий подани ташкил қилиш","l":"Asosiy podani tashkil qilish","t":""},{"c":"0850","k":"Ерни ободонлаштиришга капитал қўйилмалар","l":"Yerni obodonlashtirishga kapital qoʻyilmalar","t":""},{"c":"0860","k":"Молиявий ижарага олинган асосий воситаларга капитал қўйилмалар","l":"Moliyaviy ijaraga olingan asosiy vositalarga kapital qoʻyilmalar","t":""},{"c":"0890","k":"Бошқа капитал қўйилмалар","l":"Boshqa kapital qoʻyilmalar","t":""},{"c":"0900","k":"Узоқ муддатли дебиторлик қарзлари ва кечиктирилган харажатлар","l":"Uzoq muddatli debitorlik qarzlari va kechiktirilgan xarajatlar","t":"А"},{"c":"0910","k":"Олинган векселлар","l":"Olingan veksellar","t":""},{"c":"0920","k":"Молиявий ижара бўйича олинадиган тўловлар","l":"Moliyaviy ijara boʻyicha olinadigan toʻlovlar","t":""},{"c":"0930","k":"Ходимларнинг узоқ муддатли қарзлари","l":"Xodimlarning uzoq muddatli qarzlari","t":""},{"c":"0940","k":"Бошқа узоқ муддатли дебиторлик қарзлар","l":"Boshqa uzoq muddatli debitorlik qarzlar","t":""},{"c":"0950","k":"Вақтинчалик фарқлар бўйича кечиктирилган фойда солиғи","l":"Vaqtinchalik farqlar boʻyicha kechiktirilgan foyda soligʻi","t":""},{"c":"0960","k":"Дисконт (чегирма)лар бўйича узоқ муддатли кечиктирилган харажатлар","l":"Diskont (chegirma)lar boʻyicha uzoq muddatli kechiktirilgan xarajatlar","t":""},{"c":"0990","k":"Бошқа узоқ муддатли кечиктирилган харажатлар","l":"Boshqa uzoq muddatli kechiktirilgan xarajatlar","t":""},{"c":"1000","k":"Материаллар","l":"Materiallar","t":"А"},{"c":"1010","k":"Хом ашё ва материаллар","l":"Xom ashyo va materiallar","t":""},{"c":"1020","k":"Сотиб олинган ярим тайёр маҳсулотлар ва бутловчи буюмлар","l":"Sotib olingan yarim tayyor mahsulotlar va butlovchi buyumlar","t":""},{"c":"1030","k":"Ёқилғилар","l":"Yoqilgʻilar","t":""},{"c":"1040","k":"Эҳтиёт қисмлар","l":"Ehtiyot qismlar","t":""},{"c":"1050","k":"Қурилиш материаллари","l":"Qurilish materiallari","t":""},{"c":"1060","k":"Тара","l":"Tara","t":""},{"c":"1070","k":"Четга қайта ишлаш учун берилган материаллар","l":"Chetga qayta ishlash uchun berilgan materiallar","t":""},{"c":"1080","k":"Инвентарь ва хўжалик жиҳозлари","l":"Inventar va xoʻjalik jihozlari","t":""},{"c":"1090","k":"Бошқа материаллар","l":"Boshqa materiallar","t":""},{"c":"1100","k":"Ўстиришдаги ва боқувдаги ҳайвонлар","l":"Oʻstirishdagi va boquvdagi hayvonlar","t":"А"},{"c":"1110","k":"Ўстиришдаги ҳайвонлар","l":"Oʻstirishdagi hayvonlar","t":""},{"c":"1120","k":"Бўрдоқидаги ҳайвонлар","l":"Boʻrdoqidagi hayvonlar","t":""},{"c":"1500","k":"Материалларни тайёрлаш ва харид қилиш","l":"Materiallarni tayyorlash va xarid qilish","t":"А"},{"c":"1510","k":"Материалларни тайёрлаш ва харид қилиш","l":"Materiallarni tayyorlash va xarid qilish","t":""},{"c":"1600","k":"Материаллар қийматидаги фарқлар","l":"Materiallar qiymatidagi farqlar","t":"А"},{"c":"1610","k":"Материаллар қийматидаги фарқлар","l":"Materiallar qiymatidagi farqlar","t":""},{"c":"2000","k":"Асосий ишлаб чиқариш","l":"Asosiy ishlab chiqarish","t":"А"},{"c":"2010","k":"Асосий ишлаб чиқариш","l":"Asosiy ishlab chiqarish","t":""},{"c":"2100","k":"Ўзида ишлаб чиқарилган ярим тайёр маҳсулотлар","l":"Oʻzida ishlab chiqarilgan yarim tayyor mahsulotlar","t":"А"},{"c":"2110","k":"Ўзида ишлаб чиқарилган ярим тайёр маҳсулотлар","l":"Oʻzida ishlab chiqarilgan yarim tayyor mahsulotlar","t":""},{"c":"2300","k":"Ёрдамчи ишлаб чиқариш","l":"Yordamchi ishlab chiqarish","t":"А"},{"c":"2310","k":"Ёрдамчи ишлаб чиқариш","l":"Yordamchi ishlab chiqarish","t":""},{"c":"2500","k":"Умумий ишлаб чиқариш харажатлари","l":"Umumiy ishlab chiqarish xarajatlari","t":"А"},{"c":"2510","k":"Умумий ишлаб чиқариш харажатлари","l":"Umumiy ishlab chiqarish xarajatlari","t":""},{"c":"2600","k":"Ишлаб чиқаришдаги яроқсиз маҳсулотлар","l":"Ishlab chiqarishdagi yaroqsiz mahsulotlar","t":"А"},{"c":"2610","k":"Ишлаб чиқаришдаги яроқсиз маҳсулотлар","l":"Ishlab chiqarishdagi yaroqsiz mahsulotlar","t":""},{"c":"2700","k":"Хизмат кўрсатувчи хўжаликлар","l":"Xizmat koʻrsatuvchi xoʻjaliklar","t":"А"},{"c":"2710","k":"Хизмат кўрсатувчи хўжаликлар","l":"Xizmat koʻrsatuvchi xoʻjaliklar","t":""},{"c":"2800","k":"Тайёр маҳсулотлар","l":"Tayyor mahsulotlar","t":"А"},{"c":"2810","k":"Омбордаги тайёр маҳсулотлар","l":"Ombordagi tayyor mahsulotlar","t":""},{"c":"2820","k":"Кўргазмадаги тайёр маҳсулотлар","l":"Koʻrgazmadagi tayyor mahsulotlar","t":""},{"c":"2830","k":"Воситачилик шартномаси бўйича берилган тайёр маҳсулотлар","l":"Vositachilik shartnomasi boʻyicha berilgan tayyor mahsulotlar","t":""},{"c":"2900","k":"Товарлар","l":"Tovarlar","t":"А"},{"c":"2910","k":"Омбордаги товарлар","l":"Ombordagi tovarlar","t":""},{"c":"2920","k":"Чакана савдодаги товарлар","l":"Chakana savdodagi tovarlar","t":""},{"c":"2930","k":"Кўргазмадаги товарлар","l":"Koʻrgazmadagi tovarlar","t":""},{"c":"2940","k":"Прокатдаги буюмлар","l":"Prokatdagi buyumlar","t":""},{"c":"2950","k":"Товарлар билан банд ва бўш таралар","l":"Tovarlar bilan band va boʻsh taralar","t":""},{"c":"2960","k":"Воситачилик шартномаси бўйича берилган товарлар","l":"Vositachilik shartnomasi boʻyicha berilgan tovarlar","t":""},{"c":"2970","k":"Йўлдаги товарлар","l":"Yoʻldagi tovarlar","t":""},{"c":"2980","k":"Савдо устамаси","l":"Savdo ustamasi","t":"КА"},{"c":"2990","k":"Бошқа товарлар","l":"Boshqa tovarlar","t":""},{"c":"3100","k":"Келгуси давр харажатлари – жорий қисми","l":"Kelgusi davr xarajatlari – joriy qismi","t":"А"},{"c":"3110","k":"Олдиндан тўланган оператив ижара ҳақи","l":"Oldindan toʻlangan operativ ijara haqi","t":""},{"c":"3120","k":"Олдиндан тўланган хизмат ҳақи","l":"Oldindan toʻlangan xizmat haqi","t":""},{"c":"3190","k":"Бошқа келгуси давр харажатлари","l":"Boshqa kelgusi davr xarajatlari","t":""},{"c":"3200","k":"Кечиктирилган харажатлар – жорий қисми","l":"Kechiktirilgan xarajatlar – joriy qismi","t":"А"},{"c":"3210","k":"Вақтинчалик фарқлар бўйича кечиктирилган фойда солиғи","l":"Vaqtinchalik farqlar boʻyicha kechiktirilgan foyda soligʻi","t":""},{"c":"3220","k":"Дисконт (чегирма)лар бўйича кечиктирилган харажатлар","l":"Diskont (chegirma)lar boʻyicha kechiktirilgan xarajatlar","t":""},{"c":"3290","k":"Бошқа кечиктирилган харажатлар","l":"Boshqa kechiktirilgan xarajatlar","t":""},{"c":"4000","k":"Олинадиган жорий тўловлар","l":"Olinadigan joriy toʻlovlar","t":"А"},{"c":"4010","k":"Харидорлар ва буюртмачилардан олинадиган тўловлар","l":"Xaridorlar va buyurtmachilardan olinadigan toʻlovlar","t":""},{"c":"4020","k":"Олинган векселлар","l":"Olingan veksellar","t":""},{"c":"4100","k":"Ажратилган бўлинмалар, шуъба ва қарам хўжалик жамиятларидан олинадиган жорий тўловлар","l":"Ajratilgan boʻlinmalar, shuʼba va qaram xoʻjalik jamiyatlaridan olinadigan joriy toʻlovlar","t":"А"},{"c":"4110","k":"Ажратилган бўлинмалардан олинадиган тўловлар","l":"Ajratilgan boʻlinmalardan olinadigan toʻlovlar","t":""},{"c":"4120","k":"Шуъба ва қарам хўжалик жамиятларидан олинадиган тўловлар","l":"Shuʼba va qaram xoʻjalik jamiyatlaridan olinadigan toʻlovlar","t":""},{"c":"4200","k":"Ходимларга берилган бўнаклар","l":"Xodimlarga berilgan boʻnaklar","t":"А"},{"c":"4210","k":"Иш ҳақи бўйича берилган бўнаклар","l":"Ish haqi boʻyicha berilgan boʻnaklar","t":""},{"c":"4220","k":"Хизмат сафарларига берилган бўнаклар","l":"Xizmat safarlariga berilgan boʻnaklar","t":""},{"c":"4230","k":"Умумхўжалик харажатлари учун берилган бўнаклар","l":"Umumxoʻjalik xarajatlari uchun berilgan boʻnaklar","t":""},{"c":"4290","k":"Ходимларга берилган бошқа бўнаклар","l":"Xodimlarga berilgan boshqa boʻnaklar","t":""},{"c":"4300","k":"Мол етказиб берувчилар ва пудратчиларга берилган бўнаклар","l":"Mol yetkazib beruvchilar va pudratchilarga berilgan boʻnaklar","t":"А"},{"c":"4310","k":"Товар-моддий захиралар учун мол етказиб берувчилар ва пудратчиларга берилган бўнаклар","l":"Tovar-moddiy zaxiralar uchun mol yetkazib beruvchilar va pudratchilarga berilgan boʻnaklar","t":""},{"c":"4320","k":"Узоқ муддатли активлар учун мол етказиб берувчилар ва пудратчиларга берилган бўнаклар","l":"Uzoq muddatli aktivlar uchun mol yetkazib beruvchilar va pudratchilarga berilgan boʻnaklar","t":""},{"c":"4330","k":"Бошқа берилган бўнаклар","l":"Boshqa berilgan boʻnaklar","t":""},{"c":"4400","k":"Бюджетга бўнак тўловлари","l":"Byudjetga boʻnak toʻlovlari","t":"А"},{"c":"4410","k":"Бюджетга солиқлар ва йиғимлар бўйича бўнак тўловлари (турлари бўйича)","l":"Byudjetga soliqlar va yigʻimlar boʻyicha boʻnak toʻlovlari (turlari boʻyicha)","t":""},{"c":"4500","k":"Давлат мақсадли жамғармаларига ва суғурталар бўйича бўнак тўловлари","l":"Davlat maqsadli jamgʻarmalariga va sugʻurtalar boʻyicha boʻnak toʻlovlari","t":"А"},{"c":"4510","k":"Суғурталар бўйича бўнак тўловлари","l":"Sugʻurtalar boʻyicha boʻnak toʻlovlari","t":""},{"c":"4520","k":"Давлат мақсадли жамғармаларига бўнак тўловлари","l":"Davlat maqsadli jamgʻarmalariga boʻnak toʻlovlari","t":""},{"c":"4600","k":"Устав капиталига таъсисчиларнинг улушлари бўйича дебиторлик қарзи","l":"Ustav kapitaliga taʼsischilarning ulushlari boʻyicha debitorlik qarzi","t":"А"},{"c":"4610","k":"Устав капиталига таъсисчиларнинг улушлари бўйича қарзи","l":"Ustav kapitaliga taʼsischilarning ulushlari boʻyicha qarzi","t":""},{"c":"4700","k":"Ходимларнинг бошқа операциялар бўйича қарзи","l":"Xodimlarning boshqa operatsiyalar boʻyicha qarzi","t":"А"},{"c":"4710","k":"Кредитга сотилган товарлар бўйича ходимларнинг қарзи","l":"Kreditga sotilgan tovarlar boʻyicha xodimlarning qarzi","t":""},{"c":"4720","k":"Берилган қарзлар бўйича ходимларнинг қарзи","l":"Berilgan qarzlar boʻyicha xodimlarning qarzi","t":""},{"c":"4730","k":"Моддий зарарни қоплаш бўйича ходимларнинг қарзи","l":"Moddiy zararni qoplash boʻyicha xodimlarning qarzi","t":""},{"c":"4790","k":"Ходимларнинг бошқа қарзлари","l":"Xodimlarning boshqa qarzlari","t":""},{"c":"4800","k":"Бошқа жорий дебиторлик қарзлар","l":"Boshqa joriy debitorlik qarzlar","t":"А"},{"c":"4810","k":"Молиявий ижара бўйича олинадиган жорий тўловлар","l":"Moliyaviy ijara boʻyicha olinadigan joriy toʻlovlar","t":""},{"c":"4820","k":"Оператив ижара бўйича олинадиган жорий тўловлар","l":"Operativ ijara boʻyicha olinadigan joriy toʻlovlar","t":""},{"c":"4830","k":"Олинадиган фоизлар","l":"Olinadigan foizlar","t":""},{"c":"4840","k":"Олинадиган дивидендлар","l":"Olinadigan dividendlar","t":""},{"c":"4850","k":"Олинадиган роялти","l":"Olinadigan royalti","t":""},{"c":"4860","k":"Даъволар бўйича олинадиган тўловлар","l":"Daʼvolar boʻyicha olinadigan toʻlovlar","t":""},{"c":"4890","k":"Бошқа дебиторлик қарзлар","l":"Boshqa debitorlik qarzlar","t":""},{"c":"4900","k":"Шубҳали қарзлар бўйича резерв","l":"Shubhali qarzlar boʻyicha rezerv","t":"КА"},{"c":"4910","k":"Шубҳали қарзлар бўйича резерв","l":"Shubhali qarzlar boʻyicha rezerv","t":""},{"c":"5000","k":"Кассадаги пул маблағлари","l":"Kassadagi pul mablagʻlari","t":"А"},{"c":"5010","k":"Миллий валютадаги пул маблағлари","l":"Milliy valyutadagi pul mablagʻlari","t":""},{"c":"5020","k":"Чет эл валютасидаги пул маблағлари","l":"Chet el valyutasidagi pul mablagʻlari","t":""},{"c":"5100","k":"Ҳисоб-китоб ҳисобварағидаги пул маблағлари","l":"Hisob-kitob hisobvaragʻidagi pul mablagʻlari","t":"А"},{"c":"5110","k":"Ҳисоб-китоб ҳисобварағи","l":"Hisob-kitob hisobvaragʻi","t":""},{"c":"5200","k":"Чет эл валютасидаги пул маблағлари","l":"Chet el valyutasidagi pul mablagʻlari","t":"А"},{"c":"5210","k":"Мамлакат ичидаги чет эл валютаси ҳисобварақлари","l":"Mamlakat ichidagi chet el valyutasi hisobvaraqlari","t":""},{"c":"5220","k":"Чет элдаги валюта ҳисобварақлари","l":"Chet eldagi valyuta hisobvaraqlari","t":""},{"c":"5500","k":"Банкдаги махсус ҳисобварақлардаги пул маблағлари","l":"Bankdagi maxsus hisobvaraqlardagi pul mablagʻlari","t":"А"},{"c":"5510","k":"Аккредитивлар","l":"Akkreditivlar","t":""},{"c":"5520","k":"Чек дафтарчалари","l":"Chek daftarchalari","t":""},{"c":"5530","k":"Бошқа махсус ҳисобварақлар","l":"Boshqa maxsus hisobvaraqlar","t":""},{"c":"5600","k":"Пул эквивалентлари","l":"Pul ekvivalentlari","t":"А"},{"c":"5610","k":"Пул эквивалентлари (турлари бўйича)","l":"Pul ekvivalentlari (turlari boʻyicha)","t":""},{"c":"5700","k":"Йўлдаги пул маблағ (ўтказма)лари","l":"Yoʻldagi pul mablagʻ (oʻtkazma)lari","t":"А"},{"c":"5710","k":"Йўлдаги пул маблағ (ўтказма)лари","l":"Yoʻldagi pul mablagʻ (oʻtkazma)lari","t":""},{"c":"5800","k":"Қисқа муддатли инвестициялар","l":"Qisqa muddatli investitsiyalar","t":"А"},{"c":"5810","k":"Қимматли қоғозлар","l":"Qimmatli qogʻozlar","t":""},{"c":"5830","k":"Берилган қисқа муддатли қарзлар","l":"Berilgan qisqa muddatli qarzlar","t":""},{"c":"5890","k":"Бошқа жорий инвестициялар","l":"Boshqa joriy investitsiyalar","t":""},{"c":"5900","k":"Камомадлар ва қийматликларнинг бузилишидан йўқотишлар ҳамда бошқа жорий активлар","l":"Kamomadlar va qiymatliklarning buzilishidan yoʻqotishlar hamda boshqa joriy aktivlar","t":"А"},{"c":"5910","k":"Камомадлар ва қийматликларнинг бузилишидан йўқотишлар","l":"Kamomadlar va qiymatliklarning buzilishidan yoʻqotishlar","t":""},{"c":"5920","k":"Бошқа жорий активлар","l":"Boshqa joriy aktivlar","t":""},{"c":"6000","k":"Мол етказиб берувчилар ва пудратчиларга тўловлар бўйича жорий мажбуриятлар","l":"Mol yetkazib beruvchilar va pudratchilarga toʻlovlar boʻyicha joriy majburiyatlar","t":"П"},{"c":"6010","k":"Мол етказиб берувчилар ва пудратчиларга тўловлар","l":"Mol yetkazib beruvchilar va pudratchilarga toʻlovlar","t":""},{"c":"6020","k":"Берилган векселлар","l":"Berilgan veksellar","t":""},{"c":"6100","k":"Ажратилган бўлинмалар, шуъба ва қарам хўжалик жамиятларига тўловлар бўйича жорий мажбуриятлар","l":"Ajratilgan boʻlinmalar, shuʼba va qaram xoʻjalik jamiyatlariga toʻlovlar boʻyicha joriy majburiyatlar","t":"П"},{"c":"6110","k":"Ажратилган бўлинмаларга тўловлар","l":"Ajratilgan boʻlinmalarga toʻlovlar","t":""},{"c":"6120","k":"Шуъба ва қарам хўжалик жамиятларига тўловлар","l":"Shuʼba va qaram xoʻjalik jamiyatlariga toʻlovlar","t":""},{"c":"6200","k":"Кечиктирилган жорий мажбуриятлар","l":"Kechiktirilgan joriy majburiyatlar","t":"П"},{"c":"6210","k":"Дисконт (чегирма)лар кўринишидаги кечиктирилган даромадлар","l":"Diskont (chegirma)lar koʻrinishidagi kechiktirilgan daromadlar","t":""},{"c":"6220","k":"Мукофот (устама)лар кўринишидаги кечиктирилган даромадлар","l":"Mukofot (ustama)lar koʻrinishidagi kechiktirilgan daromadlar","t":""},{"c":"6230","k":"Бошқа кечиктирилган даромадлар","l":"Boshqa kechiktirilgan daromadlar","t":""},{"c":"6240","k":"Солиқлар ва йиғимлар бўйича кечиктирилган мажбуриятлар","l":"Soliqlar va yigʻimlar boʻyicha kechiktirilgan majburiyatlar","t":""},{"c":"6250","k":"Вақтинчалик фарқлар бўйича кечиктирилган фойда солиғи мажбуриятлари","l":"Vaqtinchalik farqlar boʻyicha kechiktirilgan foyda soligʻi majburiyatlari","t":""},{"c":"6290","k":"Бошқа кечиктирилган мажбуриятлар","l":"Boshqa kechiktirilgan majburiyatlar","t":""},{"c":"6300","k":"Олинган бўнакларнинг жорий қисми","l":"Olingan boʻnaklarning joriy qismi","t":"П"},{"c":"6310","k":"Харидорлар ва буюртмачилардан олинган бўнаклар – жорий қисми","l":"Xaridorlar va buyurtmachilardan olingan boʻnaklar – joriy qismi","t":""},{"c":"6320","k":"Акцияга обуначилардан олинган бўнаклар","l":"Aktsiyaga obunachilardan olingan boʻnaklar","t":""},{"c":"6390","k":"Бошқа олинган бўнаклар","l":"Boshqa olingan boʻnaklar","t":""},{"c":"6400","k":"Бюджетга тўловлар бўйича қарзлар","l":"Byudjetga toʻlovlar boʻyicha qarzlar","t":"П"},{"c":"6410","k":"Бюджетга тўловлар бўйича қарзлар (турлари бўйича)","l":"Byudjetga toʻlovlar boʻyicha qarzlar (turlari boʻyicha)","t":""},{"c":"6500","k":"Суғурта ва давлат мақсадли жамғармаларига тўловлар бўйича жорий қарзлар","l":"Sugʻurta va davlat maqsadli jamgʻarmalariga toʻlovlar boʻyicha joriy qarzlar","t":"П"},{"c":"6510","k":"Суғурта бўйича тўловлар","l":"Sugʻurta boʻyicha toʻlovlar","t":""},{"c":"6520","k":"Давлат мақсадли жамғармаларига тўловлар","l":"Davlat maqsadli jamgʻarmalariga toʻlovlar","t":""},{"c":"6600","k":"Таъсисчиларга бўлган жорий қарзлар","l":"Taʼsischilarga boʻlgan joriy qarzlar","t":"П"},{"c":"6610","k":"Тўланадиган дивидендлар","l":"Toʻlanadigan dividendlar","t":""},{"c":"6620","k":"Чиқиб кетаётган таъсисчиларга улушлари бўйича қарз","l":"Chiqib ketayotgan taʼsischilarga ulushlari boʻyicha qarz","t":""},{"c":"6630","k":"Таъсисчиларнинг устав капиталини ошириш бўйича улушлари","l":"Taʼsischilarning ustav kapitalini oshirish boʻyicha ulushlari","t":""},{"c":"6700","k":"Иш ҳақи бўйича ходимлар билан ҳисоб-китоблар","l":"Ish haqi boʻyicha xodimlar bilan hisob-kitoblar","t":"П"},{"c":"6710","k":"Иш ҳақи бўйича ходимлар билан ҳисоб-китоблар","l":"Ish haqi boʻyicha xodimlar bilan hisob-kitoblar","t":""},{"c":"6720","k":"Депонентланган иш ҳақи","l":"Deponentlangan ish haqi","t":""},{"c":"6800","k":"Қисқа муддатли кредитлар ва қарзлар","l":"Qisqa muddatli kreditlar va qarzlar","t":"П"},{"c":"6810","k":"Қисқа муддатли кредитлар","l":"Qisqa muddatli kreditlar","t":""},{"c":"6820","k":"Қисқа муддатли қарзлар","l":"Qisqa muddatli qarzlar","t":""},{"c":"6830","k":"Тўланадиган облигациялар","l":"Toʻlanadigan obligatsiyalar","t":""},{"c":"6840","k":"Тўланадиган векселлар","l":"Toʻlanadigan veksellar","t":""},{"c":"6900","k":"Бошқа жорий кредиторлик қарзлар","l":"Boshqa joriy kreditorlik qarzlar","t":"П"},{"c":"6910","k":"Тўланадиган оператив ижара","l":"Toʻlanadigan operativ ijara","t":""},{"c":"6920","k":"Ҳисобланган фоизлар","l":"Hisoblangan foizlar","t":""},{"c":"6930","k":"Роялти бўйича қарзлар","l":"Royalti boʻyicha qarzlar","t":""},{"c":"6940","k":"Кафолатлар бўйича қарзлар","l":"Kafolatlar boʻyicha qarzlar","t":""},{"c":"6950","k":"Узоқ муддатли мажбуриятлар – жорий қисми","l":"Uzoq muddatli majburiyatlar – joriy qismi","t":""},{"c":"6960","k":"Даъволар бўйича тўловлар","l":"Daʼvolar boʻyicha toʻlovlar","t":""},{"c":"6970","k":"Ҳисобдор шахсларга бўлган қарзлар","l":"Hisobdor shaxslarga boʻlgan qarzlar","t":""},{"c":"6990","k":"Бошқа мажбуриятлар","l":"Boshqa majburiyatlar","t":""},{"c":"7000","k":"Мол етказиб берувчилар ва пудратчиларга узоқ муддатли тўловлар","l":"Mol yetkazib beruvchilar va pudratchilarga uzoq muddatli toʻlovlar","t":"П"},{"c":"7010","k":"Мол етказиб берувчилар ва пудратчиларга узоқ муддатли тўловлар","l":"Mol yetkazib beruvchilar va pudratchilarga uzoq muddatli toʻlovlar","t":""},{"c":"7020","k":"Берилган узоқ муддатли векселлар","l":"Berilgan uzoq muddatli veksellar","t":""},{"c":"7100","k":"Ажратилган бўлинмалар, шуъба ва қарам хўжалик жамиятларига тўловлар бўйича узоқ муддатли мажбуриятлар","l":"Ajratilgan boʻlinmalar, shuʼba va qaram xoʻjalik jamiyatlariga toʻlovlar boʻyicha uzoq muddatli majburiyatlar","t":"П"},{"c":"7110","k":"Ажратилган бўлинмаларга бўлган узоқ муддатли қарзлар","l":"Ajratilgan boʻlinmalarga boʻlgan uzoq muddatli qarzlar","t":""},{"c":"7120","k":"Шуъба ва қарам хўжалик жамиятларига бўлган узоқ муддатли қарзлар","l":"Shuʼba va qaram xoʻjalik jamiyatlariga boʻlgan uzoq muddatli qarzlar","t":""},{"c":"7200","k":"Кечиктирилган узоқ муддатли мажбуриятлар","l":"Kechiktirilgan uzoq muddatli majburiyatlar","t":"П"},{"c":"7210","k":"Дисконт (чегирма)лар кўринишидаги узоқ муддатли кечиктирилган даромадлар","l":"Diskont (chegirma)lar koʻrinishidagi uzoq muddatli kechiktirilgan daromadlar","t":""},{"c":"7220","k":"Мукофот (устама)лар кўринишидаги узоқ муддатли кечиктирилган даромадлар","l":"Mukofot (ustama)lar koʻrinishidagi uzoq muddatli kechiktirilgan daromadlar","t":""},{"c":"7230","k":"Бошқа узоқ муддатли кечиктирилган даромадлар","l":"Boshqa uzoq muddatli kechiktirilgan daromadlar","t":""},{"c":"7240","k":"Солиқлар ва йиғимлар бўйича узоқ муддатли кечиктирилган мажбуриятлар","l":"Soliqlar va yigʻimlar boʻyicha uzoq muddatli kechiktirilgan majburiyatlar","t":""},{"c":"7250","k":"Вақтинчалик фарқлар бўйича кечиктирилган фойда солиғи узоқ муддатли мажбуриятлари","l":"Vaqtinchalik farqlar boʻyicha kechiktirilgan foyda soligʻi uzoq muddatli majburiyatlari","t":""},{"c":"7290","k":"Бошқа узоқ муддатли кечиктирилган мажбуриятлар","l":"Boshqa uzoq muddatli kechiktirilgan majburiyatlar","t":""},{"c":"7300","k":"Харидорлар ва буюртмачилардан олинган бўнаклар – узоқ муддатли қисми","l":"Xaridorlar va buyurtmachilardan olingan boʻnaklar – uzoq muddatli qismi","t":"П"},{"c":"7310","k":"Харидорлар ва буюртмачилардан олинган бўнаклар – узоқ муддатли қисми","l":"Xaridorlar va buyurtmachilardan olingan boʻnaklar – uzoq muddatli qismi","t":""},{"c":"7800","k":"Узоқ муддатли кредитлар ва қарзлар","l":"Uzoq muddatli kreditlar va qarzlar","t":"П"},{"c":"7810","k":"Узоқ муддатли кредитлар","l":"Uzoq muddatli kreditlar","t":""},{"c":"7820","k":"Узоқ муддатли қарзлар","l":"Uzoq muddatli qarzlar","t":""},{"c":"7830","k":"Тўланадиган узоқ муддатли облигациялар","l":"Toʻlanadigan uzoq muddatli obligatsiyalar","t":""},{"c":"7840","k":"Тўланадиган узоқ муддатли векселлар","l":"Toʻlanadigan uzoq muddatli veksellar","t":""},{"c":"7900","k":"Бошқа узоқ муддатли кредиторлик қарзлар","l":"Boshqa uzoq muddatli kreditorlik qarzlar","t":"П"},{"c":"7910","k":"Тўланадиган молиявий ижара","l":"Toʻlanadigan moliyaviy ijara","t":""},{"c":"7920","k":"Кредиторларга бўлган бошқа узоқ муддатли қарзлар","l":"Kreditorlarga boʻlgan boshqa uzoq muddatli qarzlar","t":""},{"c":"8300","k":"Устав капитали","l":"Ustav kapitali","t":"П"},{"c":"8310","k":"Оддий акциялар","l":"Oddiy aktsiyalar","t":""},{"c":"8320","k":"Имтиёзли акциялар","l":"Imtiyozli aktsiyalar","t":""},{"c":"8330","k":"Пай ва улушлар","l":"Pay va ulushlar","t":""},{"c":"8400","k":"Қўшилган капитал","l":"Qoʻshilgan kapital","t":"П"},{"c":"8410","k":"Эмиссия даромади","l":"Emissiya daromadi","t":""},{"c":"8420","k":"Устав капиталини шакллантиришдаги курс фарқи","l":"Ustav kapitalini shakllantirishdagi kurs farqi","t":""},{"c":"8500","k":"Резерв капитали","l":"Rezerv kapitali","t":"П"},{"c":"8510","k":"Узоқ муддатли активларни қайта баҳолаш бўйича тузатишлар","l":"Uzoq muddatli aktivlarni qayta baholash boʻyicha tuzatishlar","t":""},{"c":"8520","k":"Резерв капитали (фонди)","l":"Rezerv kapitali (fondi)","t":""},{"c":"8530","k":"Текинга олинган мулк","l":"Tekinga olingan mulk","t":""},{"c":"8600","k":"Сотиб олинган хусусий акциялар","l":"Sotib olingan xususiy aktsiyalar","t":"КП"},{"c":"8610","k":"Сотиб олинган хусусий акциялар – оддий","l":"Sotib olingan xususiy aktsiyalar – oddiy","t":""},{"c":"8620","k":"Сотиб олинган хусусий акциялар – имтиёзли","l":"Sotib olingan xususiy aktsiyalar – imtiyozli","t":""},{"c":"8700","k":"Тақсимланмаган фойда (қопланмаган зарар)","l":"Taqsimlanmagan foyda (qoplanmagan zarar)","t":"П"},{"c":"8710","k":"Ҳисобот даврининг тақсимланмаган фойдаси (қопланмаган зарари)","l":"Hisobot davrining taqsimlanmagan foydasi (qoplanmagan zarari)","t":""},{"c":"8720","k":"Жамғарилган фойда (қопланмаган зарар)","l":"Jamgʻarilgan foyda (qoplanmagan zarar)","t":""},{"c":"8800","k":"Мақсадли тушумлар","l":"Maqsadli tushumlar","t":"П"},{"c":"8810","k":"Грантлар","l":"Grantlar","t":""},{"c":"8820","k":"Субсидиялар","l":"Subsidiyalar","t":""},{"c":"8830","k":"Аъзолик бадаллари","l":"Aʼzolik badallari","t":""},{"c":"8840","k":"Мақсадли фойдаланиладиган солиқ имтиёзлари","l":"Maqsadli foydalaniladigan soliq imtiyozlari","t":""},{"c":"8890","k":"Бошқа мақсадли тушумлар","l":"Boshqa maqsadli tushumlar","t":""},{"c":"8900","k":"Келгуси харажатлар ва тўловлар резервлари","l":"Kelgusi xarajatlar va toʻlovlar rezervlari","t":"П"},{"c":"8910","k":"Келгуси харажатлар ва тўловлар резервлари","l":"Kelgusi xarajatlar va toʻlovlar rezervlari","t":""},{"c":"9000","k":"Асосий (операцион) фаолиятнинг даромадлари","l":"Asosiy (operatsion) faoliyatning daromadlari","t":"Т"},{"c":"9010","k":"Тайёр маҳсулотларни сотишдан даромадлар","l":"Tayyor mahsulotlarni sotishdan daromadlar","t":""},{"c":"9020","k":"Товарларни сотишдан даромадлар","l":"Tovarlarni sotishdan daromadlar","t":""},{"c":"9030","k":"Ишлар бажариш ва хизматлар кўрсатишдан даромадлар","l":"Ishlar bajarish va xizmatlar koʻrsatishdan daromadlar","t":""},{"c":"9040","k":"Сотилган товарлар (маҳсулотлар)нинг қайтиши","l":"Sotilgan tovarlar (mahsulotlar)ning qaytishi","t":""},{"c":"9050","k":"Харидорлар ва буюртмачиларга берилган чегирмалар","l":"Xaridorlar va buyurtmachilarga berilgan chegirmalar","t":""},{"c":"9100","k":"Сотилган маҳсулот (товар, иш, хизмат)ларнинг таннархи","l":"Sotilgan mahsulot (tovar, ish, xizmat)larning tannarxi","t":"Т"},{"c":"9110","k":"Сотилган тайёр маҳсулотларнинг таннархи","l":"Sotilgan tayyor mahsulotlarning tannarxi","t":""},{"c":"9120","k":"Сотилган товарларнинг таннархи","l":"Sotilgan tovarlarning tannarxi","t":""},{"c":"9130","k":"Бажарилган иш ва кўрсатилган хизматларнинг таннархи","l":"Bajarilgan ish va koʻrsatilgan xizmatlarning tannarxi","t":""},{"c":"9140","k":"Даврий ҳисобда товар-моддий захираларни сотиб олиш/харид қилиш","l":"Davriy hisobda tovar-moddiy zaxiralarni sotib olish/xarid qilish","t":""},{"c":"9150","k":"Даврий ҳисобда товар-моддий захиралар бўйича тузатишлар","l":"Davriy hisobda tovar-moddiy zaxiralar boʻyicha tuzatishlar","t":""},{"c":"9200","k":"Асосий воситалар ва бошқа активларнинг чиқиб кетиши","l":"Asosiy vositalar va boshqa aktivlarning chiqib ketishi","t":"Т"},{"c":"9210","k":"Асосий воситаларнинг чиқиб кетиши","l":"Asosiy vositalarning chiqib ketishi","t":""},{"c":"9220","k":"Бошқа активларнинг чиқиб кетиши","l":"Boshqa aktivlarning chiqib ketishi","t":""},{"c":"9300","k":"Асосий фаолиятнинг бошқа даромадлари","l":"Asosiy faoliyatning boshqa daromadlari","t":"Т"},{"c":"9310","k":"Асосий воситаларнинг чиқиб кетишидан фойда","l":"Asosiy vositalarning chiqib ketishidan foyda","t":""},{"c":"9320","k":"Бошқа активларнинг чиқиб кетишидан фойда","l":"Boshqa aktivlarning chiqib ketishidan foyda","t":""},{"c":"9330","k":"Ундирилган жарима, пеня ва устамалар","l":"Undirilgan jarima, penya va ustamalar","t":""},{"c":"9340","k":"Ўтган йиллар фойдалари","l":"Oʻtgan yillar foydalari","t":""},{"c":"9350","k":"Оператив ижарадан даромадлар","l":"Operativ ijaradan daromadlar","t":""},{"c":"9360","k":"Кредитор ва депонент қарзларни ҳисобдан чиқаришдан даромадлар","l":"Kreditor va deponent qarzlarni hisobdan chiqarishdan daromadlar","t":""},{"c":"9370","k":"Хизмат кўрсатувчи хўжаликлар даромадлари","l":"Xizmat koʻrsatuvchi xoʻjaliklar daromadlari","t":""},{"c":"9380","k":"Қайтарилмайдиган молиявий ёрдам","l":"Qaytarilmaydigan moliyaviy yordam","t":""},{"c":"9390","k":"Бошқа операцион даромадлар","l":"Boshqa operatsion daromadlar","t":""},{"c":"9400","k":"Давр харажатлари","l":"Davr xarajatlari","t":"Т"},{"c":"9410","k":"Сотиш харажатлари","l":"Sotish xarajatlari","t":""},{"c":"9420","k":"Маъмурий харажатлар","l":"Maʼmuriy xarajatlar","t":""},{"c":"9430","k":"Бошқа операцион харажатлар","l":"Boshqa operatsion xarajatlar","t":""},{"c":"9500","k":"Молиявий фаолият бўйича даромадлар","l":"Moliyaviy faoliyat boʻyicha daromadlar","t":"Т"},{"c":"9510","k":"Роялти кўринишидаги даромадлар","l":"Royalti koʻrinishidagi daromadlar","t":""},{"c":"9520","k":"Дивидендлар кўринишидаги даромадлар","l":"Dividendlar koʻrinishidagi daromadlar","t":""},{"c":"9530","k":"Фоизлар кўринишидаги даромадлар","l":"Foizlar koʻrinishidagi daromadlar","t":""},{"c":"9540","k":"Валюталар курслари фарқидан даромадлар","l":"Valyutalar kurslari farqidan daromadlar","t":""},{"c":"9550","k":"Молиявий ижарадан даромадлар","l":"Moliyaviy ijaradan daromadlar","t":""},{"c":"9560","k":"Қимматли қоғозларни қайта баҳолашдан даромадлар","l":"Qimmatli qogʻozlarni qayta baholashdan daromadlar","t":""},{"c":"9590","k":"Молиявий фаолиятнинг бошқа даромадлари","l":"Moliyaviy faoliyatning boshqa daromadlari","t":""},{"c":"9600","k":"Молиявий фаолият бўйича харажатлар","l":"Moliyaviy faoliyat boʻyicha xarajatlar","t":"Т"},{"c":"9610","k":"Фоизлар кўринишидаги харажатлар","l":"Foizlar koʻrinishidagi xarajatlar","t":""},{"c":"9620","k":"Валюталар курслари фарқидан зарарлар","l":"Valyutalar kurslari farqidan zararlar","t":""},{"c":"9630","k":"Қимматли қоғозларни чиқариш ва тарқатиш бўйича харажатлар","l":"Qimmatli qogʻozlarni chiqarish va tarqatish boʻyicha xarajatlar","t":""},{"c":"9690","k":"Молиявий фаолият бўйича бошқа харажатлар","l":"Moliyaviy faoliyat boʻyicha boshqa xarajatlar","t":""},{"c":"9700","k":"Фавқулодда вазиятлардан олинган фойда (зарар)","l":"Favqulodda vaziyatlardan olingan foyda (zarar)","t":"Т"},{"c":"9710","k":"Фавқулодда вазиятлардан олинган фойдалар","l":"Favqulodda vaziyatlardan olingan foydalar","t":""},{"c":"9720","k":"Фавқулодда вазиятлардан кўрилган зарарлар","l":"Favqulodda vaziyatlardan koʻrilgan zararlar","t":""},{"c":"9800","k":"Солиқ мажбуриятларини тўлаш учун фойданинг ишлатилиши","l":"Soliq majburiyatlarini toʻlash uchun foydaning ishlatilishi","t":"Т"},{"c":"9810","k":"Фойда солиғи бўйича харажатлар","l":"Foyda soligʻi boʻyicha xarajatlar","t":""},{"c":"9820","k":"Фойдадан ҳисобланган бошқа солиқ мажбуриятлари бўйича харажатлар","l":"Foydadan hisoblangan boshqa soliq majburiyatlari boʻyicha xarajatlar","t":""},{"c":"9900","k":"Якуний молиявий натижа","l":"Yakuniy moliyaviy natija","t":"Т"},{"c":"9910","k":"Якуний молиявий натижа (фойда ёки зарар)","l":"Yakuniy moliyaviy natija (foyda yoki zarar)","t":""},{"c":"001","k":"Оператив ижарага олинган асосий воситалар","l":"Operativ ijaraga olingan asosiy vositalar","t":"БТ"},{"c":"002","k":"Масъул сақлашга қабул қилинган товар-моддий захиралар","l":"Masʼul saqlashga qabul qilingan tovar-moddiy zaxiralar","t":"БТ"},{"c":"003","k":"Қайта ишловга қабул қилинган материаллар","l":"Qayta ishlovga qabul qilingan materiallar","t":"БТ"},{"c":"004","k":"Воситачилик шартномаси бўйича қабул қилинган товарлар","l":"Vositachilik shartnomasi boʻyicha qabul qilingan tovarlar","t":"БТ"},{"c":"005","k":"Ўрнатиш учун қабул қилинган ускуналар","l":"Oʻrnatish uchun qabul qilingan uskunalar","t":"БТ"},{"c":"006","k":"Қатъий ҳисобдаги бланкалар","l":"Qatʼiy hisobdagi blankalar","t":"БТ"},{"c":"007","k":"Тўловга қобилиятсиз дебиторларнинг зарарга ўтказилиб ҳисобдан чиқарилган қарзи","l":"Toʻlovga qobiliyatsiz debitorlarning zararga oʻtkazilib hisobdan chiqarilgan qarzi","t":"БТ"},{"c":"008","k":"Мажбуриятлар ва тўловларни таъминлаш – олинган","l":"Majburiyatlar va toʻlovlarni taʼminlash – olingan","t":"БТ"},{"c":"009","k":"Мажбуриятлар ва тўловларни таъминлаш – берилган","l":"Majburiyatlar va toʻlovlarni taʼminlash – berilgan","t":"БТ"},{"c":"010","k":"Молиявий ижара шартномаси бўйича берилган асосий воситалар","l":"Moliyaviy ijara shartnomasi boʻyicha berilgan asosiy vositalar","t":"БТ"},{"c":"011","k":"Ссуда шартномаси бўйича олинган мулк","l":"Ssuda shartnomasi boʻyicha olingan mulk","t":"БТ"},{"c":"012","k":"Келгуси даврларда солиқ солинадиган базадан чегириладиган харажатлар","l":"Kelgusi davrlarda soliq solinadigan bazadan chegiriladigan xarajatlar","t":"БТ"},{"c":"013","k":"Вақтинчалик солиқ ва божхона имтиёзлари (турлари бўйича)","l":"Vaqtinchalik soliq va bojxona imtiyozlari (turlari boʻyicha)","t":"БТ"},{"c":"014","k":"Фойдаланишдаги инвентарь ва хўжалик жиҳозлари","l":"Foydalanishdagi inventar va xoʻjalik jihozlari","t":"БТ"},{"c":"015","k":"Оддий ширкат шартномаси (биргаликдаги фаолият) бўйича олинган мулк","l":"Oddiy shirkat shartnomasi (birgalikdagi faoliyat) boʻyicha olingan mulk","t":"БТ"},{"c":"016","k":"Фойдаланиш ҳуқуқи бўйича олинган номоддий активлар","l":"Foydalanish huquqi boʻyicha olingan nomoddiy aktivlar","t":"БТ"}];
+const CH=[
+  {id:1,n:"1-bob Aktivlar",k:"1-боб Активлар",f:d=>d.c.length===4&&d.c[0]<'6'},
+  {id:2,n:"2-bob Majburiyatlar",k:"2-боб Мажбуриятлар",f:d=>d.c.length===4&&(d.c[0]==='6'||d.c[0]==='7')},
+  {id:3,n:"3-bob Xususiy kapital",k:"3-боб Хусусий капитал",f:d=>d.c.length===4&&d.c[0]==='8'},
+  {id:4,n:"4-bob Daromad va xarajat",k:"4-боб Даромад ва харажат",f:d=>d.c.length===4&&d.c[0]==='9'},
+  {id:5,n:"5-bob Balansdan tashqari",k:"5-боб Балансдан ташқари",f:d=>d.c.length===3},
+];
+const TYPES={"А":["A","Aktiv"],"КА":["KA","Kontraaktiv"],"П":["P","Passiv"],"КП":["KP","Kontrapassiv"],"Т":["T","Tranzit"],"БТ":["BT","Balansdan tashqari"]};
+const isMain=d=>d.c.length===3||d.c.endsWith('00');
+// each account's type comes from its main account
+const typeOf={};
+(()=>{let cur='';DATA.forEach(d=>{if(isMain(d)){cur=d.t}typeOf[d.c]=d.t||cur});})();
+
+let S={tab:'list',cyr:false,ch:[1,2,3,4,5],all:false,weak:false,hideName:false,hideCode:false,dir:'mix',qn:10};
+const stats={};
+try{Object.assign(S,JSON.parse(localStorage.getItem('hr-set')||'{}'));Object.assign(stats,JSON.parse(localStorage.getItem('hr-stat')||'{}'))}catch(e){}
+S.tab='list';
+function save(){try{localStorage.setItem('hr-set',JSON.stringify({cyr:S.cyr,ch:S.ch,all:S.all,weak:S.weak,dir:S.dir,qn:S.qn}));localStorage.setItem('hr-stat',JSON.stringify(stats))}catch(e){}}
+const $=s=>document.querySelector(s);
+const nm=d=>S.cyr?d.k:d.l;
+const isWeak=c=>{const s=stats[c];return s&&s.b>s.o};
+function pool(){
+  return DATA.filter(d=>(S.all||isMain(d))&&S.ch.some(i=>CH[i-1].f(d))&&(!S.weak||isWeak(d.c)));
+}
+function mark(c,ok){const s=stats[c]||(stats[c]={o:0,b:0});ok?s.o++:s.b++;save()}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function tagOf(d){const t=typeOf[d.c];return t?`<span class="tag" title="${TYPES[t]?TYPES[t][1]:''}">${TYPES[t]?TYPES[t][0]:t}</span>`:''}
+
+function renderFilters(){
+  $('#chapters').innerHTML=CH.map(c=>`<button class="chip" data-ch="${c.id}" aria-pressed="${S.ch.includes(c.id)}">${S.cyr?c.k:c.n}</button>`).join('');
+  $('#sc-lat').setAttribute('aria-pressed',!S.cyr);$('#sc-cyr').setAttribute('aria-pressed',S.cyr);
+  $('#lv-main').setAttribute('aria-pressed',!S.all);$('#lv-all').setAttribute('aria-pressed',S.all);
+  $('#wk-off').setAttribute('aria-pressed',!S.weak);$('#wk-on').setAttribute('aria-pressed',S.weak);
+  const n=pool().length,w=DATA.filter(d=>isWeak(d.c)).length;
+  $('#count').textContent=`Tanlangan: ${n} ta hisob`+(w?` · qiyinlar: ${w} ta`:'');
+}
+
+/* ---------- list ---------- */
+function viewList(){
+  const p=pool();
+  if(!p.length)return `<div class="card">Tanlangan hisob yo'q. Bo'limlarni yoki "Hammasi" filtrini tanlang.</div>`;
+  let h=`<div class="tools"><span class="count">Yodlash uchun yashiring, qatorni bosib oching:</span>
+    <button class="btn" id="hn">${S.hideName?'Nomlarni ko\'rsat':'Nomlarni yashir'}</button>
+    <button class="btn" id="hc">${S.hideCode?'Raqamlarni ko\'rsat':'Raqamlarni yashir'}</button></div>`;
+  CH.forEach(c=>{
+    const items=p.filter(d=>c.f(d));if(!items.length)return;
+    h+=`<div class="chapter">${S.cyr?c.k:c.n}</div><div class="card group">`;
+    h+=items.map(d=>`<button class="grow ${isMain(d)?'main':'sub'}" data-c="${d.c}">
+      <span class="code ${S.hideCode?'hid':''}">${d.c}</span>
+      <span class="nm ${S.hideName?'hid':''}">${esc(nm(d))}</span>${tagOf(d)}</button>`).join('');
+    h+=`</div>`;
+  });
+  return h;
+}
+function bindList(){
+  $('#hn')?.addEventListener('click',()=>{S.hideName=!S.hideName;render()});
+  $('#hc')?.addEventListener('click',()=>{S.hideCode=!S.hideCode;render()});
+  document.querySelectorAll('.grow').forEach(b=>b.addEventListener('click',()=>b.querySelectorAll('.hid').forEach(e=>e.classList.remove('hid'))));
+}
+
+/* ---------- flashcards ---------- */
+let F={deck:[],i:0,flip:false,known:0,front:'code'};
+function startFlash(){F.deck=shuffle(pool());F.i=0;F.flip=false;F.known=0}
+function viewFlash(){
+  const dirs=`<div class="tools"><div class="seg"><button data-fr="code" aria-pressed="${F.front==='code'}">Raqam → nom</button><button data-fr="name" aria-pressed="${F.front==='name'}">Nom → raqam</button></div></div>`;
+  if(!F.deck.length)return dirs+`<div class="card">Tanlangan hisob yo'q.</div>`;
+  if(F.i>=F.deck.length)return dirs+`<div class="card" style="text-align:center"><div class="score">${F.known}/${F.deck.length}</div><p>Bilganlaringiz soni. Qolganlari "qiyinlar" ro'yxatiga qo'shildi.</p><button class="btn primary" id="fr">Qaytadan</button></div>`;
+  const d=F.deck[F.i];
+  const front=F.front==='code'?`<div class="big">${d.c}</div>`:`<div class="txt">${esc(nm(d))}</div>`;
+  const back=F.front==='code'?`<div class="txt">${esc(nm(d))}</div>`:`<div class="big">${d.c}</div>`;
+  return dirs+`<div class="bar"><i style="width:${F.i/F.deck.length*100}%"></i></div>
+   <button class="flash" id="fc" aria-label="Kartochkani aylantirish">${front}${F.flip?`<hr style="width:60%;border:0;border-top:1px solid var(--line)">${back}<div>${tagOf(d)}</div>`:'<div class="hint">Javobni ko\'rish uchun bosing</div>'}</button>
+   <div class="tools" style="justify-content:center">${F.flip?`<button class="btn bad" id="fno">Bilmadim</button><button class="btn ok" id="fyes">Bildim</button>`:`<button class="btn primary" id="fshow">Javobni ko'rsat</button>`}</div>
+   <div class="count" style="text-align:center">${F.i+1} / ${F.deck.length}</div>`;
+}
+function bindFlash(){
+  document.querySelectorAll('[data-fr]').forEach(b=>b.onclick=()=>{F.front=b.dataset.fr;render()});
+  const flip=()=>{F.flip=true;render()};
+  $('#fc')&&($('#fc').onclick=()=>{F.flip=!F.flip;render()});
+  $('#fshow')&&($('#fshow').onclick=flip);
+  const nxt=ok=>{const d=F.deck[F.i];mark(d.c,ok);if(ok)F.known++;F.i++;F.flip=false;render()};
+  $('#fyes')&&($('#fyes').onclick=()=>nxt(true));
+  $('#fno')&&($('#fno').onclick=()=>nxt(false));
+  $('#fr')&&($('#fr').onclick=()=>{startFlash();render()});
+}
+
+/* ---------- test ---------- */
+let T={qs:[],i:0,score:0,picked:null,wrong:[]};
+function startTest(){
+  const p=pool();
+  const sel=shuffle(p).slice(0,Math.min(S.qn,p.length));
+  T={qs:sel.map(d=>{
+    const dir=S.dir==='mix'?(Math.random()<.5?'c2n':'n2c'):S.dir;
+    const near=shuffle(DATA.filter(x=>x.c!==d.c&&(S.all||isMain(x))&&x.c.length===d.c.length&&x.c[0]===d.c[0]));
+    const far=shuffle(DATA.filter(x=>x.c!==d.c&&(S.all||isMain(x))));
+    const wr=[...near,...far].filter((x,i,a)=>a.indexOf(x)===i).slice(0,3);
+    return{d,dir,opts:shuffle([d,...wr])};
+  }),i:0,score:0,picked:null,wrong:[]};
+}
+function viewTest(){
+  const p=pool();
+  const cfg=`<div class="tools"><div class="seg"><button data-td="mix" aria-pressed="${S.dir==='mix'}">Aralash</button><button data-td="c2n" aria-pressed="${S.dir==='c2n'}">Raqam → nom</button><button data-td="n2c" aria-pressed="${S.dir==='n2c'}">Nom → raqam</button></div>
+   <div class="seg">${[10,20,30].map(n=>`<button data-tn="${n}" aria-pressed="${S.qn===n}">${n} ta</button>`).join('')}</div></div>`;
+  if(p.length<4)return cfg+`<div class="card">Test uchun kamida 4 ta hisob tanlang.</div>`;
+  if(!T.qs.length)startTest();
+  if(T.i>=T.qs.length){
+    const pc=Math.round(T.score/T.qs.length*100);
+    return cfg+`<div class="card" style="text-align:center"><div class="score">${T.score}/${T.qs.length}</div><p>${pc}% to'g'ri</p>
+      ${T.wrong.length?`<div class="rev" style="text-align:left"><div class="lbl">Xato qilganlaringiz</div>${T.wrong.map(d=>`<div><span class="code">${d.c}</span><span>${esc(nm(d))}</span></div>`).join('')}</div>`:'<p>Hammasi to\'g\'ri!</p>'}
+      <p><button class="btn primary" id="tr">Yangi test</button></p></div>`;
+  }
+  const q=T.qs[T.i],d=q.d;
+  const ques=q.dir==='c2n'?`<span class="code">${d.c}</span> qaysi hisob?`:`${esc(nm(d))} <span class="count" style="display:block">raqamini toping</span>`;
+  const opts=q.opts.map((o,k)=>{
+    let cl='opt';if(T.picked!==null){if(o.c===d.c)cl+=' right';else if(o.c===T.picked)cl+=' wrong'}
+    const lbl=q.dir==='c2n'?esc(nm(o)):`<span class="code">${o.c}</span>`;
+    return `<button class="${cl}" data-o="${o.c}" ${T.picked!==null?'disabled':''}>${lbl}</button>`}).join('');
+  return cfg+`<div class="bar"><i style="width:${T.i/T.qs.length*100}%"></i></div><div class="card"><div class="q">${ques}</div><div class="opts">${opts}</div>
+    ${T.picked!==null?`<p class="msg ${T.picked===d.c?'ok':'bad'}">${T.picked===d.c?'To\'g\'ri':'Noto\'g\'ri'}: <span class="code">${d.c}</span> ${esc(nm(d))} ${tagOf(d)}</p><button class="btn primary" id="tnext">${T.i+1<T.qs.length?'Keyingisi':'Natija'}</button>`:''}
+    </div><div class="count" style="text-align:center">${T.i+1} / ${T.qs.length}</div>`;
+}
+function bindTest(){
+  document.querySelectorAll('[data-td]').forEach(b=>b.onclick=()=>{S.dir=b.dataset.td;save();T.qs=[];render()});
+  document.querySelectorAll('[data-tn]').forEach(b=>b.onclick=()=>{S.qn=+b.dataset.tn;save();T.qs=[];render()});
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const d=T.qs[T.i].d;T.picked=b.dataset.o;const ok=T.picked===d.c;mark(d.c,ok);
+    if(ok)T.score++;else T.wrong.push(d);render();$('#tnext')?.focus()});
+  $('#tnext')&&($('#tnext').onclick=()=>{T.i++;T.picked=null;render()});
+  $('#tr')&&($('#tr').onclick=()=>{T.qs=[];render()});
+}
+
+/* ---------- write ---------- */
+let W={deck:[],i:0,res:null,score:0};
+function startWrite(){W={deck:shuffle(pool()),i:0,res:null,score:0}}
+function viewWrite(){
+  if(!W.deck.length)return `<div class="card">Tanlangan hisob yo'q.</div>`;
+  if(W.i>=W.deck.length)return `<div class="card" style="text-align:center"><div class="score">${W.score}/${W.deck.length}</div><p>To'g'ri yozilgan raqamlar.</p><button class="btn primary" id="wr">Qaytadan</button></div>`;
+  const d=W.deck[W.i];
+  return `<div class="bar"><i style="width:${W.i/W.deck.length*100}%"></i></div><div class="card" style="display:flex;flex-direction:column;gap:12px">
+    <div class="lbl" style="margin:0">Hisob raqamini yozing</div>
+    <div class="q">${esc(nm(d))}</div>
+    <form id="wf" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input class="ans ${W.res===null?'':W.res?'right':'wrong'}" id="wi" inputmode="numeric" autocomplete="off" maxlength="4" ${W.res!==null?'readonly':''} aria-label="Hisob raqami">
+      <button class="btn primary" id="wb" type="submit">${W.res===null?'Tekshir':'Keyingisi'}</button>
+    </form>
+    <div class="msg ${W.res===null?'':W.res?'ok':'bad'}">${W.res===null?'':W.res?'To\'g\'ri':`Javob: <span class="code">${d.c}</span>`} ${W.res===null?'':tagOf(d)}</div></div>
+    <div class="count" style="text-align:center">${W.i+1} / ${W.deck.length}</div>`;
+}
+function bindWrite(){
+  const f=$('#wf');
+  if(f){const inp=$('#wi');if(W.res===null)inp.focus();
+    f.onsubmit=e=>{e.preventDefault();
+      if(W.res!==null){W.i++;W.res=null;render();return}
+      const v=inp.value.trim();if(!v)return;
+      const d=W.deck[W.i];W.res=v===d.c;if(W.res)W.score++;mark(d.c,W.res);render();$('#wb').focus()}}
+  $('#wr')&&($('#wr').onclick=()=>{startWrite();render()});
+}
+
+function render(){
+  renderFilters();
+  document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===S.tab));
+  const v={list:viewList,flash:viewFlash,test:viewTest,write:viewWrite}[S.tab]();
+  $('#view').innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">${v}</div>`;
+  ({list:bindList,flash:bindFlash,test:bindTest,write:bindWrite})[S.tab]();
+}
+function resetModes(){F.deck=[];T.qs=[];W.deck=[];if(S.tab==='flash')startFlash();if(S.tab==='write')startWrite()}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;T.qs=[];if(S.tab==='flash')startFlash();if(S.tab==='write')startWrite();render()});
+$('#chapters').addEventListener('click',e=>{const b=e.target.closest('[data-ch]');if(!b)return;const id=+b.dataset.ch;
+  S.ch=S.ch.includes(id)?S.ch.filter(x=>x!==id):[...S.ch,id];save();resetModes();render()});
+$('#sc-lat').onclick=()=>{S.cyr=false;save();render()};
+$('#sc-cyr').onclick=()=>{S.cyr=true;save();render()};
+$('#lv-main').onclick=()=>{S.all=false;save();resetModes();render()};
+$('#lv-all').onclick=()=>{S.all=true;save();resetModes();render()};
+$('#wk-off').onclick=()=>{S.weak=false;save();resetModes();render()};
+$('#wk-on').onclick=()=>{S.weak=true;save();resetModes();render()};
+render();
+</script>
+
+</body></html>
