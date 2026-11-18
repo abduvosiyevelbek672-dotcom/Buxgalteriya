@@ -1,0 +1,12 @@
+APK ni kompyuterda dastur o'rnatmasdan olish:
+
+1. github.com da bepul akkaunt oching.
+2. Yangi repository yarating (New repository), nomi: buxgalteriya, Public.
+3. "uploading an existing file" havolasini bosing va shu papkadagi BARCHA fayllarni
+   (www, assets, package.json, capacitor.config.json) sudrab tashlang. Commit qiling.
+4. .github/workflows/build.yml faylini qo'lda yarating:
+   Add file > Create new file > nomiga   .github/workflows/build.yml   deb yozing,
+   ichiga build.yml mazmunini ko'chirib qo'ying > Commit.
+5. Repository'dagi "Actions" bo'limiga o'ting. Yig'ish 5-10 daqiqa oladi.
+6. Tugagach (yashil belgi), ishga ochib, pastdagi Artifacts > Buxgalteriya-APK ni yuklab oling.
+7. Zip ichidagi app-debug.apk ni telefonga yuboring va oching (Noma'lum manbalardan o'rnatishga ruxsat bering).
